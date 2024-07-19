@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class User(AbstractUser):
     ROLE_CHOICES = (
@@ -19,7 +20,9 @@ class Subject(models.Model):
 class Mark(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    marks_obtained = models.DecimalField(max_digits=5, decimal_places=2)
-
+    marks_obtained = models.DecimalField(validators=[MinValueValidator(1), MaxValueValidator(100)], max_digits=5, decimal_places=2)
+    
+    def __str__(self):
+        return f"{self.student.first_name} - {self.subject.name}: {self.marks_obtained}"
 
 
